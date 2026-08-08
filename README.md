@@ -1,6 +1,7 @@
 # 🏝️ ISLPOAP — the island where POAPs live on
 
-**Live:** https://shakaleikaumaka.github.io/islpoap/
+**Live:** https://islpoap.xyz — *IStill Love Poap* 🏝️
+(mirror: https://shakaleikaumaka.github.io/islpoap/)
 
 A free, open-source, CC0 **proof-of-presence badge forge** built on
 [BasePaint](https://basepaint.xyz) — a love hack dedicated to **Patricio Worthalter,
