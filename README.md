@@ -51,12 +51,16 @@ One HTML file. Zero dependencies. No backend, no keys, no kill switch.
 
 ## Roadmap — POAP on every chain
 
-1. **Phase 1 (this repo)** — the forge, the proof, the memorial. Live now.
-2. **Phase 2** — [`contracts/ISLPOAP.sol`](contracts/ISLPOAP.sol) (draft, not yet deployed):
-   a ~100-line free-claim ERC-1155 on Base. Any address claims badge *N* for gas only,
-   one per day per address; metadata is the JSON the forge already emits. No fees, no owner mint privileges.
-3. **Phase 3** — a free drop-maker for real-world events: pick any CC0 BasePaint day as
-   badge art, share a claim link, gift presence. The way POAP always felt.
+1. **Phase 1 ✓ LIVE** — the forge, the proof, the memorial.
+2. **Phase 2 ✓ BUILT, igniting** — [`contracts/ISLPOAP.sol`](contracts/ISLPOAP.sol): a free-claim
+   ERC-1155 on Base. Token id = BasePaint day; once per address per day, gas only. **No owner, no
+   admin keys, no fees — and metadata is generated fully on-chain (base64 JSON)**, so badges outlive
+   every server. Compiled (solc 0.8.28, viaIR) and fully rehearsed on anvil (claim / double-claim
+   rejection / day gating / transfers / batch / ERC-165 / metadata decode — all green). Deploys the
+   moment the deploy wallet holds a dust of Base ETH.
+3. **Phase 3 ✓ LIVE** — the **Drop Maker**: name your moment, pick a CC0 day as badge art, share one
+   link. The whole drop is encoded inside the URL — no backend, no signup, no cost. Guests keep the
+   badge and claim it on Base. The way POAP always felt.
 
 ## Run it
 

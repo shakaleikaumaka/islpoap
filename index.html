@@ -109,6 +109,8 @@
     <a href="#live">live island</a>
     <a href="#forge">badge forge</a>
     <a href="#proof">proof of paint</a>
+    <a href="#claim">claim</a>
+    <a href="#drops">drops</a>
     <a href="#memorial">the memorial</a>
     <a href="#lore">lore</a>
   </nav>
@@ -118,6 +120,7 @@
 <main id="top">
 
   <div class="cursive">IStill Love Poap</div>
+  <div id="dropHero"></div>
   <h1>The island where <em>POAPs live on</em>.</h1>
   <p class="sub">
     A free, open-source, CC0 proof-of-presence badge forge built on
@@ -200,6 +203,60 @@
     </div>
   </section>
 
+  <!-- ═══════════════ CLAIM ON BASE (PHASE 2) ═══════════════ -->
+  <section id="claim">
+    <h2>▓ CLAIM ON BASE <span class="tag">— phase 2 · free on-chain badges, gas only, no fees ever</span></h2>
+    <div class="card">
+      <p class="sub">The <a href="https://github.com/shakaleikaumaka/islpoap/blob/main/contracts/ISLPOAP.sol" target="_blank" rel="noopener">ISLPOAP contract</a>
+      is a free-claim ERC-1155 on Base: token id = BasePaint day. Once per address per day, for gas only
+      (a fraction of a cent). No fees, no owner, no admin keys — the metadata lives <b>fully on-chain</b>,
+      so these badges outlive every server, including this one.</p>
+      <div id="claimReady" style="display:none;">
+        <div class="inline" style="margin-top:1rem;">
+          <input type="number" id="claimDay" min="1" style="max-width:140px;">
+          <button class="btn" onclick="claimOnBase()">⛓ CLAIM — FREE</button>
+          <button class="btn ghost" onclick="connectWallet()">🔌 connect wallet</button>
+        </div>
+        <div class="status" id="claimStatus"></div>
+        <p class="note" id="claimContractNote"></p>
+      </div>
+      <div id="claimPending">
+        <p class="status">🕯 contract compiled, rehearsed &amp; staged — igniting on Base the moment the deploy
+        wallet receives its dust of gas. This page will light up by itself.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ DROP MAKER (PHASE 3) ═══════════════ -->
+  <section id="drops">
+    <h2>▓ DROP MAKER <span class="tag">— phase 3 · gift presence, the way POAP always felt</span></h2>
+    <div class="card">
+      <p class="sub">Hosting a meetup, a show, a dinner, a goodbye? Pick any CC0 BasePaint day as your badge art,
+      name your moment, and share the link. Guests open it, see their badge with your event's name on it,
+      download it — and claim it on Base once the contract is live. <b>No backend, no signup, no cost:</b>
+      the entire drop lives inside the link itself.</p>
+      <div class="row" style="margin-top:1rem;">
+        <div class="grow">
+          <p class="note">badge art — BasePaint day (try the <a href="#forge">forge</a> to browse):</p>
+          <input type="number" id="dropDay" min="1" style="max-width:140px;">
+          <p class="note" style="margin-top:.8rem;">your moment:</p>
+          <input type="text" id="dropEvent" placeholder="e.g. ʻOhana Dinner · Devcon Mumbai 2026" maxlength="60">
+          <p class="note" style="margin-top:.8rem;">a few words (optional):</p>
+          <input type="text" id="dropMsg" placeholder="e.g. thank you for being there" maxlength="120">
+          <p class="note" style="margin-top:.8rem;">from (optional):</p>
+          <input type="text" id="dropFrom" placeholder="e.g. Shaka" maxlength="40">
+          <button class="btn" style="margin-top:1rem;" onclick="makeDrop()">🎁 CREATE DROP LINK</button>
+          <div class="status" id="dropStatus"></div>
+          <div id="dropOut" style="display:none;">
+            <input type="text" id="dropLink" readonly onclick="this.select()">
+            <button class="btn ghost" onclick="copyDropLink()">📋 copy link</button>
+            <a class="btn ghost" id="dropPreview" href="#" target="_blank">👁 preview</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ═══════════════ THE MEMORIAL ═══════════════ -->
   <section id="memorial">
     <h2>▓ THE MEMORIAL <span class="tag">— 6,700,000+ POAPs live on-chain forever. here are yours.</span></h2>
@@ -251,11 +308,10 @@
 
       <h2 style="font-size:1rem; margin-top:1.6rem;">ROADMAP — POAP ON EVERY CHAIN</h2>
       <p style="font-size:.85rem;">
-        <b>Phase 1 (this page):</b> the forge, the proof, the memorial — live now, unstoppable static.<br>
-        <b>Phase 2:</b> <code>ISLPOAP.sol</code> — a ~100-line free-claim ERC-1155 on Base: any painter of day
-        <i>N</i> claims badge <i>N</i> for gas only; metadata = the JSON this forge already emits.<br>
-        <b>Phase 3:</b> a free drop-maker for real-world events — pick any CC0 BasePaint day as your badge art,
-        share a claim link, gift presence. The way POAP always felt.
+        <b>Phase 1 ✓ LIVE:</b> the forge, the proof, the memorial — unstoppable static.<br>
+        <b>Phase 2 ✓ BUILT:</b> <a href="#claim"><code>ISLPOAP.sol</code></a> — free-claim ERC-1155 on Base,
+        fully on-chain metadata, no owner, no fees. Igniting on Base the moment the deploy wallet is dusted with gas.<br>
+        <b>Phase 3 ✓ LIVE:</b> the <a href="#drops">Drop Maker</a> — gift presence with a link. The way POAP always felt.
       </p>
     </div>
   </section>
@@ -340,7 +396,7 @@ function paintStrokes(ctx, size, palette, strokes){
 }
 
 /* ════════════════ BADGE COMPOSER ════════════════ */
-function composeBadge(targetId, artCanvas, day, theme, palette){
+function composeBadge(targetId, artCanvas, day, theme, palette, bottomText){
   const cv = document.getElementById(targetId), ctx = cv.getContext("2d");
   const W = cv.width, C = W/2;
   ctx.clearRect(0,0,W,W);
@@ -385,7 +441,8 @@ function composeBadge(targetId, artCanvas, day, theme, palette){
   };
   const rText = C - 62;
   arcText(`BASEPAINT · DAY ${day}`, rText, -Math.PI/2, 1);
-  const t = theme.length > 26 ? theme.slice(0,25)+"…" : theme;
+  const bt = (bottomText || theme);
+  const t = bt.length > 26 ? bt.slice(0,25)+"…" : bt;
   arcText(t.toUpperCase(), rText, Math.PI/2, -1);
 }
 
@@ -573,9 +630,119 @@ async function memorial(){
   }
 }
 
+/* ════════════════ PHASE 2 — CLAIM ON BASE ════════════════ */
+const ISLPOAP_CONTRACT = null; // set at deploy — the page lights up by itself
+const BASE_CHAIN_HEX = "0x2105", BASE_RPC = "https://mainnet.base.org";
+let userAccount = null;
+
+function claimBoot(){
+  if (!ISLPOAP_CONTRACT) return;
+  document.getElementById("claimPending").style.display = "none";
+  document.getElementById("claimReady").style.display = "block";
+  const el = document.getElementById("claimDay");
+  el.max = CURRENT_DAY - 1; el.value = CURRENT_DAY - 1;
+  document.getElementById("claimContractNote").innerHTML =
+    `contract: <a href="https://basescan.org/address/${ISLPOAP_CONTRACT}" target="_blank" rel="noopener">${ISLPOAP_CONTRACT}</a> · Base mainnet · MIT · no owner, no fees`;
+}
+async function connectWallet(){
+  const S = document.getElementById("claimStatus");
+  if (!window.ethereum){ S.innerHTML = 'no wallet found — try a browser with MetaMask / Coinbase Wallet'; return null; }
+  try{
+    const acc = await window.ethereum.request({ method:"eth_requestAccounts" });
+    userAccount = acc[0];
+    try{
+      await window.ethereum.request({ method:"wallet_switchEthereumChain", params:[{ chainId: BASE_CHAIN_HEX }] });
+    }catch(sw){
+      if (sw.code === 4902){
+        await window.ethereum.request({ method:"wallet_addEthereumChain", params:[{ chainId: BASE_CHAIN_HEX, chainName:"Base", nativeCurrency:{name:"Ether",symbol:"ETH",decimals:18}, rpcUrls:[BASE_RPC], blockExplorerUrls:["https://basescan.org"] }] });
+      } else throw sw;
+    }
+    S.textContent = "🔌 connected: " + userAccount.slice(0,6) + "…" + userAccount.slice(-4) + " on Base";
+    return userAccount;
+  }catch(e){ S.textContent = "wallet says: " + (e.message||e); return null; }
+}
+async function claimOnBase(dayArg){
+  const S = document.getElementById("claimStatus");
+  if (!ISLPOAP_CONTRACT){ S.textContent = "contract igniting soon"; return; }
+  const day = dayArg || parseInt(document.getElementById("claimDay").value);
+  if (!day || day < 1 || day >= CURRENT_DAY){ S.textContent = "pick a finished day (1–" + (CURRENT_DAY-1) + ")"; return; }
+  if (!userAccount && !(await connectWallet())) return;
+  try{
+    const selector = keccak256("claim(uint256)").slice(0,8);
+    const data = "0x" + selector + day.toString(16).padStart(64,"0");
+    S.textContent = "🖋 sign in your wallet — free claim, gas only…";
+    const tx = await window.ethereum.request({ method:"eth_sendTransaction", params:[{ from: userAccount, to: ISLPOAP_CONTRACT, data }] });
+    S.innerHTML = `🏝️ claimed! <a href="https://basescan.org/tx/${tx}" target="_blank" rel="noopener">view on Basescan</a> — badge day ${day} is yours forever`;
+  }catch(e){ S.textContent = "the tide pushed back: " + (e.message||e); }
+}
+
+/* ════════════════ PHASE 3 — DROP MAKER ════════════════ */
+function b64u(s){ return btoa(unescape(encodeURIComponent(s))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); }
+function unb64u(s){ s = s.replace(/-/g,"+").replace(/_/g,"/"); while (s.length % 4) s += "="; return decodeURIComponent(escape(atob(s))); }
+function makeDrop(){
+  const S = document.getElementById("dropStatus");
+  const day = parseInt(document.getElementById("dropDay").value);
+  const ev = document.getElementById("dropEvent").value.trim();
+  if (!day || day < 1 || day > CURRENT_DAY){ S.textContent = "pick a BasePaint day (1–" + CURRENT_DAY + ")"; return; }
+  if (!ev){ S.textContent = "name your moment"; return; }
+  const drop = { d: day, e: ev, m: document.getElementById("dropMsg").value.trim(), f: document.getElementById("dropFrom").value.trim() };
+  const link = location.origin + location.pathname + "#drop=" + b64u(JSON.stringify(drop));
+  document.getElementById("dropLink").value = link;
+  document.getElementById("dropPreview").href = link;
+  document.getElementById("dropOut").style.display = "block";
+  S.textContent = "🎁 drop sealed inside the link — share it with your people";
+}
+function copyDropLink(){
+  const el = document.getElementById("dropLink"); el.select();
+  navigator.clipboard?.writeText(el.value);
+  document.getElementById("dropStatus").textContent = "📋 copied — go gift some presence";
+}
+async function renderDropFromHash(){
+  const m = location.hash.match(/#drop=([A-Za-z0-9_-]+)/);
+  if (!m) return;
+  let drop; try{ drop = JSON.parse(unb64u(m[1])); }catch(e){ return; }
+  if (!drop.d || !drop.e) return;
+  const hero = document.getElementById("dropHero");
+  hero.innerHTML = `
+    <div class="card" style="border-color:var(--accent); margin:1rem 0 2rem;">
+      <div style="font-size:.8rem; color:var(--dim);">🎁 you've been handed a memory${drop.f ? " by <b style='color:var(--accent)'>"+esc(drop.f)+"</b>" : ""}</div>
+      <div style="font-size:1.3rem; font-weight:700; color:var(--accent); margin:.4rem 0;">${esc(drop.e)}</div>
+      ${drop.m ? `<div style="font-size:.9rem; margin-bottom:.6rem;">“${esc(drop.m)}”</div>` : ""}
+      <div class="row">
+        <div class="badgewrap"><canvas id="dropBadge" class="badge px" width="1024" height="1024"></canvas></div>
+        <div class="grow">
+          <div class="status" id="dropHeroStatus">forging your badge…</div>
+          <button class="btn" onclick="downloadCanvas('dropBadge','islpoap-drop-day-${drop.d}.png')">⬇ keep this badge</button>
+          <button class="btn ghost" onclick="claimOnBase(${drop.d})">⛓ claim on Base — free</button>
+          <p class="note">badge art: BasePaint day ${drop.d} (CC0, painted by many hands) ·
+          <a href="#drops">make your own drop</a> · powered by ISLPOAP, a gift, not extractive</p>
+        </div>
+      </div>
+    </div>`;
+  try{
+    const meta = await getTheme(drop.d);
+    let art;
+    try{
+      art = await new Promise((ok, no) => {
+        const img = new Image(); img.crossOrigin = "anonymous";
+        img.onload = () => ok(img); img.onerror = () => no(new Error("art"));
+        img.src = `https://basepaint.net/v3/${String(drop.d).padStart(4,"0")}.png`;
+      }).then(img => { const c = document.createElement("canvas"); c.width = img.naturalWidth; c.height = img.naturalHeight; const x = c.getContext("2d"); x.imageSmoothingEnabled = false; x.drawImage(img,0,0); return c; });
+    }catch(e){ art = await replayToCanvas(drop.d, meta); }
+    composeBadge("dropBadge", art, drop.d, meta.theme, meta.palette, drop.e);
+    document.getElementById("dropHeroStatus").textContent = "🏝️ yours to keep — you were there";
+  }catch(e){
+    document.getElementById("dropHeroStatus").textContent = "island fog: " + e.message;
+  }
+}
+
 /* ════════════════ BOOT ════════════════ */
 liveInit();
 forgeDay();
+claimBoot();
+renderDropFromHash();
+window.addEventListener("hashchange", renderDropFromHash);
+document.getElementById("dropDay").value = Math.max(1, CURRENT_DAY - 1);
 document.getElementById("proofAddr").addEventListener("keydown", e=>{ if(e.key==="Enter") proofOfPaint(); });
 document.getElementById("memAddr").addEventListener("keydown", e=>{ if(e.key==="Enter") memorial(); });
 document.getElementById("forgeDay").addEventListener("keydown", e=>{ if(e.key==="Enter") forgeDay(); });
