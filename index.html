@@ -417,15 +417,22 @@ function composeBadge(targetId, artCanvas, day, theme, palette, bottomText){
   ctx.save();
   ctx.beginPath(); ctx.arc(C,C,rArt,0,7); ctx.clip();
   ctx.imageSmoothingEnabled = false;
-  const s = Math.min(artCanvas.width, artCanvas.height);
-  ctx.drawImage(artCanvas, (artCanvas.width-s)/2, (artCanvas.height-s)/2, s, s, C-rArt, C-rArt, rArt*2, rArt*2);
+  const aw = artCanvas && artCanvas.width, ah = artCanvas && artCanvas.height;
+  if (aw && ah){
+    const s = Math.min(aw, ah);
+    ctx.drawImage(artCanvas, (aw-s)/2, (ah-s)/2, s, s, C-rArt, C-rArt, rArt*2, rArt*2);
+  } else {
+    ctx.fillStyle = (palette && palette[3]) || "#073eb1"; ctx.fillRect(C-rArt, C-rArt, rArt*2, rArt*2);
+  }
   ctx.restore();
   ctx.lineWidth = 6; ctx.strokeStyle = "#000";
   ctx.beginPath(); ctx.arc(C,C,rArt,0,7); ctx.stroke();
   // arc text
   const arcText = (text, radius, start, dir) => {
+    if (!text) return;
     ctx.save(); ctx.fillStyle = "#fde047";
-    ctx.font = "700 34px 'Roboto Mono', monospace";
+    try{ ctx.font = "700 34px 'Roboto Mono', monospace"; }
+    catch(_){ try{ ctx.font = "bold 34px monospace"; }catch(__){ } }
     ctx.textAlign = "center"; ctx.textBaseline = "middle";
     const step = 0.062;
     let a = start - dir*step*(text.length-1)/2;
@@ -494,23 +501,8 @@ async function forgeDay(){
   S("forgeButtons").style.display = "none";
   try{
     const meta = await getTheme(day);
-    let art;
-    if (day < CURRENT_DAY){
-      art = await new Promise((ok, no) => {
-        const img = new Image();
-        img.crossOrigin = "anonymous";
-        img.onload = () => ok(img);
-        img.onerror = () => no(new Error("art not found"));
-        img.src = `https://basepaint.net/v3/${String(day).padStart(4,"0")}.png`;
-      }).then(img => {
-        const c = document.createElement("canvas");
-        c.width = img.naturalWidth; c.height = img.naturalHeight;
-        const x = c.getContext("2d"); x.imageSmoothingEnabled = false;
-        x.drawImage(img,0,0); return c;
-      }).catch(async () => await replayToCanvas(day, meta));
-    } else {
-      art = await replayToCanvas(day, meta);
-    }
+    const art = await loadArt(day, meta);
+    try{ await (document.fonts && document.fonts.ready); }catch(_){ }
     composeBadge("forgeBadge", art, day, meta.theme, meta.palette);
     let extra = "";
     try{
@@ -533,6 +525,44 @@ async function replayToCanvas(day, meta){
   x.fillStyle = meta.palette[0] || "#000"; x.fillRect(0,0,meta.size,meta.size);
   await fetchStrokes(day, null, page => paintStrokes(x, meta.size, meta.palette, page));
   return c;
+}
+// solid palette disc — the last-resort art so a badge ALWAYS renders
+function solidArt(meta){
+  const c = document.createElement("canvas");
+  c.width = c.height = meta.size || 256;
+  const x = c.getContext("2d");
+  x.fillStyle = (meta.palette && meta.palette[3]) || "#073eb1";
+  x.fillRect(0,0,c.width,c.height);
+  return c;
+}
+// robust art loader — iOS-safe CORS fetch→bitmap, then stroke-replay, then solid disc.
+// Never throws; always returns a drawable canvas.
+async function loadArt(day, meta){
+  // 1) CORS fetch → blob → bitmap (untainted; avoids iOS crossOrigin-Image cache taint bug)
+  if (day < CURRENT_DAY){
+    try{
+      const r = await fetch(`https://basepaint.net/v3/${String(day).padStart(4,"0")}.png`, { mode:"cors" });
+      if (r.ok){
+        const blob = await r.blob();
+        let bmp;
+        try{ bmp = await createImageBitmap(blob); }
+        catch(_){ bmp = await new Promise((ok,no)=>{ const u=URL.createObjectURL(blob); const i=new Image(); i.onload=()=>{URL.revokeObjectURL(u);ok(i);}; i.onerror=()=>{URL.revokeObjectURL(u);no(new Error("decode"));}; i.src=u; }); }
+        const w = bmp.width||bmp.naturalWidth, h = bmp.height||bmp.naturalHeight;
+        if (w && h){
+          const c = document.createElement("canvas");
+          c.width = w; c.height = h;
+          const x = c.getContext("2d"); x.imageSmoothingEnabled = false;
+          x.drawImage(bmp, 0, 0);
+          return c;
+        }
+      }
+    }catch(_){ /* fall through */ }
+  }
+  // 2) reconstruct from on-chain strokes
+  try{ return await replayToCanvas(day, meta); }
+  catch(_){ /* fall through */ }
+  // 3) never leave them empty-handed
+  return solidArt(meta);
 }
 function forgeRandom(){
   document.getElementById("forgeDay").value = 1 + Math.floor(Math.random()*(CURRENT_DAY-1));
@@ -720,19 +750,15 @@ async function renderDropFromHash(){
       </div>
     </div>`;
   try{
-    const meta = await getTheme(drop.d);
-    let art;
-    try{
-      art = await new Promise((ok, no) => {
-        const img = new Image(); img.crossOrigin = "anonymous";
-        img.onload = () => ok(img); img.onerror = () => no(new Error("art"));
-        img.src = `https://basepaint.net/v3/${String(drop.d).padStart(4,"0")}.png`;
-      }).then(img => { const c = document.createElement("canvas"); c.width = img.naturalWidth; c.height = img.naturalHeight; const x = c.getContext("2d"); x.imageSmoothingEnabled = false; x.drawImage(img,0,0); return c; });
-    }catch(e){ art = await replayToCanvas(drop.d, meta); }
-    composeBadge("dropBadge", art, drop.d, meta.theme, meta.palette, drop.e);
+    let meta;
+    try{ meta = await getTheme(drop.d); }
+    catch(_){ meta = { theme:"", size:256, palette:["#073eb1"] }; } // theme is optional decoration
+    const art = await loadArt(drop.d, meta);        // never throws — always a canvas
+    try{ await (document.fonts && document.fonts.ready); }catch(_){ }
+    composeBadge("dropBadge", art, drop.d, meta.theme || "", meta.palette, drop.e);
     document.getElementById("dropHeroStatus").textContent = "🏝️ yours to keep — you were there";
   }catch(e){
-    document.getElementById("dropHeroStatus").textContent = "island fog: " + e.message;
+    document.getElementById("dropHeroStatus").textContent = "island fog: " + (e && e.message || e);
   }
 }
 
