@@ -47,7 +47,7 @@ One HTML file. Zero dependencies. No backend, no keys, no kill switch.
   `image-rendering: pixelated`), CORS-only public APIs, cursor pagination.
 - **Originality** — nobody else is treating BasePaint days as *events* and painters as
   *attendees*. POAP × BasePaint is a marriage, not a mashup.
-- **Staying power** — static + CC0 + MIT + no server = unkillable; plus a staged on-chain
+- **Staying power** — static + CC0 + no server = unkillable; plus a staged on-chain
   Phase 2 (below) so badges can outlive even this page.
 
 ## Roadmap — POAP on every chain
@@ -78,7 +78,7 @@ python3 -m http.server 8000   # or just open index.html
 
 ## License
 
-Code **MIT**. Artwork **CC0** (BasePaint). Inlined
+Code **CC0** (gifted 2026-08-10, was MIT). Artwork **CC0** (BasePaint). Inlined
 [js-sha3](https://github.com/emn178/js-sha3) © Chen, Yi-Cyuan, MIT.
 
 ---
