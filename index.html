@@ -169,6 +169,7 @@
         </p>
         <a class="btn" href="https://basepaint.xyz/" target="_blank" rel="noopener">🖌️ Paint today → earn your place</a>
         <button class="btn ghost" onclick="downloadCanvas('liveBadge','islpoap-day-'+CURRENT_DAY+'-live.png')">⬇ Save today's badge</button>
+        <button class="btn ghost" onclick="shareBadge('liveBadge', shareText(CURRENT_DAY, liveMeta&&liveMeta.theme, 'Today\u2019s BasePaint island'))">𝕏 share this badge</button>
       </div>
     </div>
   </section>
@@ -192,6 +193,7 @@
         <div id="forgeButtons" style="display:none;">
           <button class="btn" onclick="downloadCanvas('forgeBadge','islpoap-day-'+lastForged.day+'.png')">⬇ Download badge PNG</button>
           <button class="btn ghost" onclick="downloadMetadata()">⬇ metadata JSON</button>
+          <button class="btn ghost" onclick="shareBadge('forgeBadge', shareText(lastForged.day, lastForged.meta&&lastForged.meta.theme, 'Forged a POAP-style badge'))">𝕏 share this badge</button>
         </div>
         <p class="note">The metadata JSON is ERC-1155-ready — the exact shape a future free on-chain
         ISLPOAP claim would use. See <a href="#lore">lore</a> for the roadmap.</p>
@@ -385,6 +387,37 @@ function dayDate(day){
 function downloadCanvas(id, name){
   const a = document.createElement("a");
   a.download = name; a.href = document.getElementById(id).toDataURL("image/png"); a.click();
+}
+function toast(msg){
+  let t = document.getElementById("toast");
+  if(!t){
+    t = document.createElement("div"); t.id = "toast";
+    t.style.cssText = "position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1E2735;color:#fff;padding:.7rem 1.1rem;border-radius:12px;font-size:.95rem;z-index:999;box-shadow:0 4px 18px rgba(0,0,0,.35);max-width:90vw;text-align:center;transition:opacity .4s;";
+    document.body.appendChild(t);
+  }
+  t.textContent = msg; t.style.opacity = "1";
+  clearTimeout(t._h); t._h = setTimeout(()=>{ t.style.opacity = "0"; }, 4200);
+}
+function shareText(day, theme, lead){
+  theme = (theme || "").slice(0, 50);
+  return lead + " — BasePaint day " + day + " (" + dayDate(day) + ")" + (theme ? " — \u201C" + theme + "\u201D" : "")
+    + " — rebuilt pixel-by-pixel from the on-chain stroke firehose, set in a POAP-style badge \uD83C\uDFDD\uFE0F\uD83C\uDFA8\n\n"
+    + "\uD83D\uDD8C paint: https://basepaint.xyz\n\uD83C\uDFDD badge: https://islpoap.xyz\n\nCC0, free forever \uD83C\uDF3A";
+}
+async function shareBadge(canvasId, text){
+  const c = document.getElementById(canvasId);
+  let copied = false;
+  try{
+    const blob = await new Promise(r => c.toBlob(r, "image/png"));
+    if (blob && navigator.clipboard && window.ClipboardItem){
+      await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+      copied = true;
+    }
+  }catch(_){ }
+  if (!copied) downloadCanvas(canvasId, canvasId + ".png");
+  window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(text), "_blank", "noopener");
+  toast(copied ? "\uD83D\uDDBC Badge image copied — just paste it into the tweet (Ctrl/\u2318+V) \uD83C\uDFDD\uFE0F"
+               : "\uD83D\uDDBC Badge PNG downloaded — attach it to your tweet \uD83C\uDFDD\uFE0F");
 }
 function esc(s){ const d=document.createElement("div"); d.textContent=s; return d.innerHTML; }
 
@@ -760,6 +793,7 @@ async function renderDropFromHash(){
         <div class="grow">
           <div class="status" id="dropHeroStatus">forging your badge…</div>
           <button class="btn" onclick="downloadCanvas('dropBadge','islpoap-drop-day-${drop.d}.png')">⬇ keep this badge</button>
+          <button class="btn ghost" onclick="shareBadge('dropBadge', shareText(${drop.d}, '', 'I got an ISLPOAP drop — \u201C' + ${JSON.stringify(drop.e)} + '\u201D'))">𝕏 share this badge</button>
           <button class="btn ghost" onclick="claimOnBase(${drop.d})">⛓ claim on Base — free</button>
           <p class="note">badge art: BasePaint day ${drop.d} (CC0, painted by many hands) ·
           <a href="#drops">make your own drop</a> · powered by ISLPOAP, a gift, not extractive</p>
