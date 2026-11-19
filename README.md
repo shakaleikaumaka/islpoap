@@ -3,7 +3,7 @@
 **Live:** https://islpoap.xyz — *IStill Love Poap* 🏝️
 (mirror: https://shakaleikaumaka.github.io/islpoap/)
 
-A free, open-source, CC0 **proof-of-presence badge forge** built on
+A free, open-source, copyleft **proof-of-presence badge forge** built on
 [BasePaint](https://basepaint.xyz) — a love hack dedicated to **Patricio Worthalter,
 Isabel González, and the whole POAP team**, who spent five years turning
 *"I was there"* into something you could keep forever.
@@ -26,7 +26,7 @@ One HTML file. Zero dependencies. No backend, no keys, no kill switch.
 | Room | What happens |
 |---|---|
 | 🏝️ **Today's Island** | The live badge **paints itself** — today's canvas is reconstructed *pixel-by-pixel from the raw on-chain stroke firehose* (BasePaint GraphQL indexer), set into a POAP-style badge, refreshed every 30s. Not a screenshot — a replay of the chain. |
-| ⚒ **Badge Forge** | Pick any of BasePaint's 1000+ days → its CC0 artwork, theme and palette are forged into a POAP-style keepsake badge (palette bead ring, arc text). Download the PNG and an **ERC-1155-ready metadata JSON**. Free, forever. |
+| ⚒ **Badge Forge** | Pick any of BasePaint's 1000+ days → its copyleft artwork, theme and palette are forged into a POAP-style keepsake badge (palette bead ring, arc text). Download the PNG and an **ERC-1155-ready metadata JSON**. Free, forever. |
 | 🔍 **Proof of Paint** | Enter any address → every day it painted, with pixels placed — its attendance record on the island. (EIP-55 checksumming done client-side with an inlined keccak256, because the indexer's filters are case-sensitive.) |
 | 🌺 **The Memorial** | Enter any address → all its **real POAPs**, alive on Gnosis, Base, Celo, Linea, Chiliz, Mantle, Unichain… Nothing is gone. That was the whole point. |
 | 📖 **Lore** | The story of POAP, the dedication, the covenant, the roadmap. |
@@ -34,7 +34,7 @@ One HTML file. Zero dependencies. No backend, no keys, no kill switch.
 ## The covenant (the CROPS mandate)
 
 - 🌱 **Free forever.** No fees, no token, no skim, no referral cut taken. Zero extraction.
-- 🌱 **CC0 & open source.** The art is public domain (thank you, BasePaint). The code is yours to fork.
+- 🌱 **Copyleft & open source.** The art is public domain (thank you, BasePaint). The code is yours to fork.
 - 🌱 **No backend.** One static file reading public infrastructure — it cannot be shut down, only forked.
 - 🌱 **Dedicated.** To the POAP team. Mahalo. 🤙🌺
 
@@ -47,7 +47,7 @@ One HTML file. Zero dependencies. No backend, no keys, no kill switch.
   `image-rendering: pixelated`), CORS-only public APIs, cursor pagination.
 - **Originality** — nobody else is treating BasePaint days as *events* and painters as
   *attendees*. POAP × BasePaint is a marriage, not a mashup.
-- **Staying power** — static + CC0 + no server = unkillable; plus a staged on-chain
+- **Staying power** — static + copyleft + no server = unkillable; plus a staged on-chain
   Phase 2 (below) so badges can outlive even this page.
 
 ## Roadmap — POAP on every chain
@@ -59,7 +59,7 @@ One HTML file. Zero dependencies. No backend, no keys, no kill switch.
    every server. Compiled (solc 0.8.28, viaIR) and fully rehearsed on anvil (claim / double-claim
    rejection / day gating / transfers / batch / ERC-165 / metadata decode — all green). Deploys the
    moment the deploy wallet holds a dust of Base ETH.
-3. **Phase 3 ✓ LIVE** — the **Drop Maker**: name your moment, pick a CC0 day as badge art, share one
+3. **Phase 3 ✓ LIVE** — the **Drop Maker**: name your moment, pick a copyleft day as badge art, share one
    link. The whole drop is encoded inside the URL — no backend, no signup, no cost. Guests keep the
    badge and claim it on Base. The way POAP always felt.
 
@@ -72,17 +72,17 @@ python3 -m http.server 8000   # or just open index.html
 ## APIs used (all public, all CORS-open)
 
 - `https://basepaint.xyz/api/theme/{day}` — theme, palette, size
-- `https://basepaint.net/v3/{day}.png` — finished CC0 artwork
+- `https://basepaint.net/v3/{day}.png` — finished copyleft artwork
 - `https://graphql.basepaint.xyz` — strokes, contributions, canvas stats
 - `https://frontend.poap.tech/actions/scan/{address}` — POAP collections (still alive 💛)
 
 ## License
 
-Code: GPL-3.0 (see LICENSE). Songs, lyrics, chords, words, art, links and pages: CC BY-SA 4.0 (see LICENSE-CONTENT). Credit: Shaka Lei Kaumaka and the ʻohana. CC0 is retired as of 19 Nov 2026; versions published earlier under CC0 stay CC0.
+Code: GPL-3.0 (see LICENSE). Songs, lyrics, chords, words, art, links and pages: CC BY-SA 4.0 (see LICENSE-CONTENT). Credit: Shaka Lei Kaumaka and the ʻohana. copyleft is retired as of 19 Nov 2026; versions published earlier under CC BY-SA 4.0 stay CC0.
 
 Earlier license note (before 19 Nov 2026; any third-party rights or carve-outs in it still apply):
 
-> Code **CC0** (gifted 2026-08-10, was MIT). Artwork **CC0** (BasePaint). Inlined
+> Code **copyleft** (gifted 2026-08-10, was MIT). Artwork **copyleft** (BasePaint). Inlined
 > [js-sha3](https://github.com/emn178/js-sha3) © Chen, Yi-Cyuan, MIT.
 >
 > ---
@@ -97,5 +97,5 @@ Earlier license note (before 19 Nov 2026; any third-party rights or carve-outs i
 ## License
 
 Code in this repository is licensed **GPL-3.0-or-later** (copyleft — share-alike for code); see [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE).
-Words, art, songs and data stay **CC0 1.0** / their makers' own terms. Everything published before 2026-10-29 stays under its old licence, irrevocably.
+Words, art, songs and data: **CC BY-SA 4.0** since 19 Nov 2026 / their makers' own terms. Everything published before 2026-10-29 stays under its old licence, irrevocably.
 By the ʻohana — Shaka's AI family.
