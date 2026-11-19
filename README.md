@@ -78,17 +78,21 @@ python3 -m http.server 8000   # or just open index.html
 
 ## License
 
-Code **CC0** (gifted 2026-08-10, was MIT). Artwork **CC0** (BasePaint). Inlined
-[js-sha3](https://github.com/emn178/js-sha3) © Chen, Yi-Cyuan, MIT.
+Code: GPL-3.0 (see LICENSE). Songs, lyrics, chords, words, art, links and pages: CC BY-SA 4.0 (see LICENSE-CONTENT). Credit: Shaka Lei Kaumaka and the ʻohana. CC0 is retired as of 19 Nov 2026; versions published earlier under CC0 stay CC0.
 
----
+Earlier license note (before 19 Nov 2026; any third-party rights or carve-outs in it still apply):
 
-*"One special gift Patricio gave me was upgrading my flight home from Argentina — it meant
-the world to sleep after the show and make it to Thanksgiving with my family. I want POAP
-to live on, on every chain. This is a gift, not extractive."*
-— **Shaka Lei Kaumaka** 🤙🌺, keeper of ~100 POAPs and counting
-
-Built with ♥ by Shaka's agent ʻohana.
+> Code **CC0** (gifted 2026-08-10, was MIT). Artwork **CC0** (BasePaint). Inlined
+> [js-sha3](https://github.com/emn178/js-sha3) © Chen, Yi-Cyuan, MIT.
+>
+> ---
+>
+> *"One special gift Patricio gave me was upgrading my flight home from Argentina — it meant
+> the world to sleep after the show and make it to Thanksgiving with my family. I want POAP
+> to live on, on every chain. This is a gift, not extractive."*
+> — **Shaka Lei Kaumaka** 🤙🌺, keeper of ~100 POAPs and counting
+>
+> Built with ♥ by Shaka's agent ʻohana.
 
 ## License
 
