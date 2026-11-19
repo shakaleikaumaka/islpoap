@@ -318,7 +318,7 @@
       <h2 style="font-size:1rem; margin-top:1.6rem;">THE COVENANT (the CROPS mandate)</h2>
       <ul class="covenant">
         <li><b>Free forever.</b> No fees, no token, no skim, no referral cut taken. Zero extraction.</li>
-        <li><b>CC0 &amp; open source.</b> The art is public domain (thank you, BasePaint). The code is yours to fork.</li>
+        <li><b>Copyleft &amp; open source.</b> The art is public domain (thank you, BasePaint). The code is yours to fork.</li>
         <li><b>No backend, no keys, no kill switch.</b> One HTML file reading public infrastructure — it cannot be shut down, only forked.</li>
         <li><b>Dedicated.</b> To Patricio Worthalter, Isabel González, and everyone who built POAP. Mahalo.</li>
       </ul>
@@ -633,7 +633,7 @@ function downloadMetadata(){
       { trait_type:"Canvas Size", value: `${meta.size}x${meta.size}` },
       { trait_type:"Palette", value: meta.palette.join(",") },
       ...(canvas ? [{ trait_type:"Artists", value: canvas.totalArtists }, { trait_type:"Pixels", value: canvas.pixelsCount }] : []),
-      { trait_type:"License", value:"CC0" },
+      { trait_type:"License", value:"CC BY-SA 4.0" },
       { trait_type:"Dedication", value:"To Patricio, Isabel & the POAP team ♥" }
     ]
   };
